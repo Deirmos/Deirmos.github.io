@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://lolibox.pages.dev/sitemap.xml
+Sitemap: https://deirmos.github.io/sitemap.xml

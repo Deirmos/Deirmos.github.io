@@ -16,7 +16,7 @@ script.js             версия с GitHub, вкладки скриншото�
 favicon.ico
 robots.txt
 sitemap.xml
-_headers              заголовки безопасности и кеширования для Cloudflare Pages
+_headers              заголовки для Cloudflare Pages (GitHub Pages их игнорирует)
 assets/
   logo.png            иконка приложения
   branch.png          декоративная ветка
@@ -37,51 +37,23 @@ python -m http.server 8787
 Откройте `http://127.0.0.1:8787/`. Через `file://` страница тоже
 откроется, но запрос версии к GitHub API может не сработать.
 
-## Публикация на Cloudflare Pages
+## Публикация на GitHub Pages
 
-Нужен бесплатный аккаунт Cloudflare: <https://dash.cloudflare.com/sign-up>.
+Сайт раздаётся из репозитория `Deirmos/Deirmos.github.io` как user site.
+Адрес: <https://deirmos.github.io/>.
 
-### Вариант 1 — загрузка папки (быстрее всего)
+Pages включён в настройках репозитория: **Settings → Pages → Build and
+deployment → Source: Deploy from a branch**, ветка `main`, папка
+`/ (root)`. Отдельная сборка не нужна — файлы отдаются как есть.
 
-1. Войдите в Cloudflare Dashboard.
-2. Слева: **Workers & Pages** → **Create** → вкладка **Pages** →
-   **Upload assets**.
-3. Название проекта: `lolibox` (тогда адрес будет
-   `https://lolibox.pages.dev`).
-4. Перетащите **содержимое** папки `C:\Users\Deimon\code\LoliBox_Website`
-   в окно загрузки. Важно: не саму папку, а файлы внутри — `index.html`
-   должен оказаться в корне.
-5. **Deploy site**. Через несколько секунд сайт будет доступен.
-
-Ограничение: при каждом обновлении сайта нужно загружать файлы заново
-(старые заменяются, если имена совпадают).
-
-### Вариант 2 — через Git (автодеплой)
-
-1. Создайте пустой репозиторий на GitHub, например `LoliBox-site`.
-2. В папке сайта:
-   ```powershell
-   git init
-   git add .
-   git commit -m "site: initial"
-   git branch -M main
-   git remote add origin https://github.com/Deirmos/LoliBox-site.git
-   git push -u origin main
-   ```
-3. В Cloudflare: **Workers & Pages** → **Create** → **Pages** →
-   **Connect to Git** → выберите репозиторий.
-4. Настройки сборки:
-   - Framework preset: **None**
-   - Build command: оставить пустым
-   - Build output directory: `/`
-5. **Save and Deploy**. Дальше каждый `git push` в `main` будет
-   обновлять сайт автоматически.
+Обновление: `git push` в `main`, Pages пересоберёт сайт за минуту.
 
 ### Свой домен
 
-В проекте Pages: **Custom domains** → **Set up a custom domain** →
-введите домен и следуйте подсказкам. Если домен уже добавлен в Cloudflare,
-DNS-запись создастся сама. HTTPS включается автоматически.
+**Settings → Pages → Custom domain** → введите домен → **Save**.
+У регистратора создайте CNAME на `deirmos.github.io` (для `www`) или
+A-записи на IP GitHub Pages (для корневого домена). HTTPS включится
+автоматически после проверки DNS.
 
 ## Что обновлять при новом релизе
 
@@ -108,8 +80,8 @@ SHA-256 автоматически скрывается, чтобы не пок�
 
 ## Если поменялся адрес сайта
 
-Сейчас в метаданных указан `https://lolibox.pages.dev`. Если проект на
-Cloudflare называется иначе или вы подключили свой домен, замените адрес в:
+Сейчас в метаданных указан `https://deirmos.github.io`. Если адрес
+изменится (свой домен, переименование репозитория), замените его в:
 
 - `index.html` — `canonical`, `og:url`, `og:image`, `twitter:image`;
 - `sitemap.xml`;
@@ -117,13 +89,9 @@ Cloudflare называется иначе или вы подключили св
 
 ## Заголовки безопасности
 
-Файл `_headers` включает CSP, запрет встраивания во фреймы и кеширование
-ассетов на год. Если включите **Cloudflare Web Analytics**, добавьте в CSP:
-
-- `script-src` → `https://static.cloudflareinsights.com`
-- `connect-src` → `https://cloudflareinsights.com`
-
-Иначе аналитика не загрузится.
+Файл `_headers` предназначен для Cloudflare Pages; GitHub Pages его
+игнорирует, поэтому CSP и `X-Frame-Options` на GitHub Pages не отдаются.
+Если понадобятся заголовки — нужен свой сервер/прокси.
 
 ## Донат
 
